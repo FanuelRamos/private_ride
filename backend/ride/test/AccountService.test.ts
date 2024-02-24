@@ -1,16 +1,21 @@
+import AccountDAO from "../src/AccountDAO";
 import AccountService from "../src/AccountService";
+import sinon from "sinon";
 
-test("Deve criar um passageiro", async function () {
-	const input = {
+test.only("Deve criar um passageiro", async function () {
+	const input: any = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
 		cpf: "95818705552",
 		isPassenger: true
 	}
+	sinon.stub(AccountDAO.prototype, "save").resolves();
+	sinon.stub(AccountDAO.prototype, "getByEmail").resolves();
 	const accountService = new AccountService();
 	const output = await accountService.signup(input);
+	input.account_id = output.accountId;
+	sinon.stub(AccountDAO.prototype, "getById").resolves(input);
 	const account = await accountService.getAccount(output.accountId);
-	console.log(account);
 	expect(account.account_id).toBeDefined();
 	expect(account.name).toBe(input.name);
 	expect(account.email).toBe(input.email);
