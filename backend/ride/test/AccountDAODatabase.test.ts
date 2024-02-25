@@ -1,8 +1,9 @@
 import crypto from "crypto";
-import AccountDAO from "../src/AccountDAO";
+import AccountDAO from "../src/AccountDAODatabase";
+import AccountDAODatabase from "../src/AccountDAODatabase";
 
 test("Deve criar um registro na tabela account e consultar por email", async function () {
-  const accountDAO = new AccountDAO();
+  const accountDAO = new AccountDAODatabase();
   const account = {
     accountId: crypto.randomUUID(),
     name: "John Doe",
@@ -24,7 +25,7 @@ test("Deve criar um registro na tabela account e consultar por email", async fun
 })
 
 test("Deve criar um registro na tabela account e consultar por account_id", async function () {
-  const accountDAO = new AccountDAO();
+  const accountDAO = new AccountDAODatabase();
   const account = {
     accountId: crypto.randomUUID(),
     name: "John Doe",

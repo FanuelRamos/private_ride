@@ -3,15 +3,14 @@ import pgp from "pg-promise";
 import CpfValidator from "./CpfValidator";
 import AccountDAO from "./AccountDAO";
 import MailerGateway from "./MailerGateway";
+import AccountDAODatabase from "./AccountDAODatabase";
 
 export default class AccountService {
 	cpfValidator: CpfValidator;
-	accountDAO: AccountDAO;
 	mailerGateway: MailerGateway;
 
-	constructor () {
+	constructor (private readonly accountDAO: AccountDAO = new AccountDAODatabase()) {
 		this.cpfValidator = new CpfValidator();
-		this.accountDAO = new AccountDAO();
 		this.mailerGateway = new MailerGateway();
 	}
 
