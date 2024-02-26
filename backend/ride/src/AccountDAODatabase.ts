@@ -1,10 +1,11 @@
 import pgp from "pg-promise";
 import AccountDAO from "./AccountDAO";
+import Account from "./Account";
 
 export default class AccountDAODatabase implements AccountDAO {
   constructor() {}
 
-  async save(account: any) {
+  async save(account: Account) {
     const connection = pgp()("postgres://postgres:@localhost:5432/cccat13");
     await connection.query(
       "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver, date, is_verified, verification_code) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
@@ -31,7 +32,8 @@ export default class AccountDAODatabase implements AccountDAO {
       [email]
     );
     await connection.$pool.end();
-    return accountData;
+    if (!accountData) return;
+    return Account.restore(accountData.account_id, accountData.name, accountData.email, accountData.cpf, !!accountData.is_passenger, !!accountData.is_driver, accountData.car_plate, accountData.date, accountData.verification_code);
   }
 
   async getById(accountId: string) {
@@ -41,6 +43,7 @@ export default class AccountDAODatabase implements AccountDAO {
       [accountId]
     );
     await connection.$pool.end();
-    return accountData;
+    if (!accountData) return;
+    return Account.restore(accountData.account_id, accountData.name, accountData.email, accountData.cpf, !!accountData.is_passenger, !!accountData.is_driver, accountData.car_plate, accountData.date, accountData.verification_code);
   }
 }

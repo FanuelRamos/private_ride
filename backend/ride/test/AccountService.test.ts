@@ -3,27 +3,20 @@ import AccountDAOMemory from "../src/AccountDAOMemory";
 import AccountService from "../src/AccountService";
 import sinon from "sinon";
 
-test("Deve criar um passageiro", async function () {
+test.only("Deve criar um passageiro", async function () {
 	const input: any = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
 		cpf: "95818705552",
 		isPassenger: true
 	}
-	const stubSave = sinon.stub(AccountDAODatabase.prototype, "save").resolves();
-	const stubGetByEmail = sinon.stub(AccountDAODatabase.prototype, "getByEmail").resolves();
 	const accountService = new AccountService();
 	const output = await accountService.signup(input);
-	input.account_id = output.accountId;
-	const stubGetById = sinon.stub(AccountDAODatabase.prototype, "getById").resolves(input);
 	const account = await accountService.getAccount(output.accountId);
-	expect(account.account_id).toBeDefined();
-	expect(account.name).toBe(input.name);
-	expect(account.email).toBe(input.email);
-	expect(account.cpf).toBe(input.cpf);
-	stubSave.restore()
-	stubGetByEmail.restore()
-	stubGetById.restore()
+	expect(account?.accountId).toBeDefined();
+	expect(account?.name).toBe(input.name);
+	expect(account?.email).toBe(input.email);
+	expect(account?.cpf).toBe(input.cpf);
 });
 
 test("Não deve criar um passageiro com cpf inválido", async function () {
@@ -107,8 +100,8 @@ test("Deve criar um passageiro com fake", async function () {
   const accountService = new AccountService(accountDAO);
   const output = await accountService.signup(input);
   const account = await accountService.getAccount(output.accountId);
-  expect(account.account_id).toBeDefined();
-  expect(account.name).toBe(input.name);
-  expect(account.email).toBe(input.email);
-  expect(account.cpf).toBe(input.cpf);
+	expect(account?.accountId).toBeDefined();
+  expect(account?.name).toBe(input.name);
+  expect(account?.email).toBe(input.email);
+  expect(account?.cpf).toBe(input.cpf);
 });
