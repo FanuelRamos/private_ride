@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import CpfValidator from "./CpfValidator";
 import AccountDAO from "./AccountDAO";
 import MailerGateway from "./MailerGateway";

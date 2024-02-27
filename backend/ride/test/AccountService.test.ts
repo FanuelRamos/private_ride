@@ -1,9 +1,7 @@
-import AccountDAODatabase from "../src/AccountDAODatabase";
 import AccountDAOMemory from "../src/AccountDAOMemory";
 import AccountService from "../src/AccountService";
-import sinon from "sinon";
 
-test.only("Deve criar um passageiro", async function () {
+test("Deve criar um passageiro", async function () {
 	const input: any = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,

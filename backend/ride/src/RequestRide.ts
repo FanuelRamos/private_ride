@@ -22,19 +22,4 @@ export default class RideService {
       rideId: ride.rideId
     }
   }
-
-  async acceptRide (input: any) {
-    const account = await this.accountDAO.getById(input.driverId);
-    if (!account?.isDriver) throw new Error("Account is not from a driver");
-    const ride = await this.rideDAO.getRideById(input.rideId);
-    ride.accept(input.driverId);
-    const activeRides = await this.rideDAO.getActiveRidesByDriverId(input.driverId);
-    if (activeRides.length > 0) throw new Error("Driver is already in another ride");
-    await this.rideDAO.update(ride);
-  }
-
-  async getRide (rideId: string) {
-    const ride = await this.rideDAO.getRideById(rideId);
-    return ride;
-  }
 }
