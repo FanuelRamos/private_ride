@@ -5,7 +5,9 @@ test("Deve criar uma conta de passageiro", async function () {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
 		cpf: "95818705552",
-		isPassenger: true
+		isPassenger: true,
+		isDriver: false,
+		carPlate: ""
 	};
   const responseSignup = await axios.post("http://localhost:3000/signup", inputSignup);
   const outputSignup = responseSignup.data;

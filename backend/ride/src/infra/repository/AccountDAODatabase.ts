@@ -1,13 +1,14 @@
 import pgp from "pg-promise";
-import AccountDAO from "./AccountDAO";
-import Account from "./Account";
+import AccountDAO from "../../application/repository/AccountDAO";
+import Account from "../../domain/Account";
+import Connection from "../database/Connection";
 
 export default class AccountDAODatabase implements AccountDAO {
-  constructor() {}
+  
+  constructor(private readonly connection: Connection) {}
 
   async save(account: Account) {
-    const connection = pgp()("postgres://postgres:@localhost:5432/cccat13");
-    await connection.query(
+    await this.connection.query(
       "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver, date, is_verified, verification_code) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
       [
         account.accountId,
@@ -22,27 +23,22 @@ export default class AccountDAODatabase implements AccountDAO {
         account.verificationCode,
       ]
     );
-    await connection.$pool.end();
   }
 
   async getByEmail(email: string) {
-    const connection = pgp()("postgres://postgres:@localhost:5432/cccat13");
-    const [accountData] = await connection.query(
+    const [accountData] = await this.connection.query(
       "select * from account where email = $1",
       [email]
     );
-    await connection.$pool.end();
     if (!accountData) return;
     return Account.restore(accountData.account_id, accountData.name, accountData.email, accountData.cpf, !!accountData.is_passenger, !!accountData.is_driver, accountData.car_plate, accountData.date, accountData.verification_code);
   }
 
   async getById(accountId: string) {
-    const connection = pgp()("postgres://postgres:@localhost:5432/cccat13");
-    const [accountData] = await connection.query(
+    const [accountData] = await this.connection.query(
       "select * from account where account_id = $1",
       [accountId]
     );
-    await connection.$pool.end();
     if (!accountData) return;
     return Account.restore(accountData.account_id, accountData.name, accountData.email, accountData.cpf, !!accountData.is_passenger, !!accountData.is_driver, accountData.car_plate, accountData.date, accountData.verification_code);
   }

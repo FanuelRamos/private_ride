@@ -1,20 +1,20 @@
-import CpfValidator from "./CpfValidator";
-import AccountDAO from "./AccountDAO";
-import MailerGateway from "./MailerGateway";
-import AccountDAODatabase from "./AccountDAODatabase";
-import Account from "./Account";
+import CpfValidator from "../../domain/CpfValidator";
+import AccountDAO from "../repository/AccountDAO";
+import MailerGateway from "../../infra/gateway/MailerGateway";
+import AccountDAODatabase from "../../infra/repository/AccountDAODatabase";
+import Account from "../../domain/Account";
 
-export default class AccountService {
+export default class Signup {
 	cpfValidator: CpfValidator;
 	mailerGateway: MailerGateway;
 
-	constructor (private readonly accountDAO: AccountDAO = new AccountDAODatabase()) {
+	constructor (private readonly accountDAO: AccountDAO) {
 		this.cpfValidator = new CpfValidator();
 		this.mailerGateway = new MailerGateway();
 	}
 
 
-	async signup (input: any) {
+	async execute (input: Input) {
 		const existingAccount = await this.accountDAO.getByEmail(input.email);
 		if (existingAccount) throw new Error("Account already exists");
 		const account = Account.create(input.name, input.email, input.cpf, input.isPassenger, input.isDriver, input.carPlate);
@@ -28,9 +28,13 @@ export default class AccountService {
       accountId: account.accountId,
     };
 	}
+}
 
-	async getAccount (accountId: string) {
-		const account = this.accountDAO.getById(accountId);
-		return account;
-	}
+type Input = {
+	name: string,
+	email: string,
+	cpf: string,
+	isPassenger: boolean,
+	isDriver: boolean,
+	carPlate: string
 }

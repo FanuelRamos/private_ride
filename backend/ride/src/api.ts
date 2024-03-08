@@ -1,19 +1,15 @@
-import express from "express";
-import AccountService from "./AccountService";
-const app = express();
+import Signup from "./application/usecase/Signup";
+import GetAccount from "./application/usecase/GetAccount";
+import PgPromiseAdapter from "./infra/database/PgPromiseAdapter";
+import AccountDAODatabase from "./infra/repository/AccountDAODatabase";
+import ExpressAdapter from "./infra/http/ExpressAdapter";
+import MainController from "./infra/controller/MainController";
 
-app.use(express.json());
-const accountService = new AccountService();
 
-app.post("/signup", async function (request, response) {
-  const input = request.body;
-  const output = await accountService.signup(input);
-  response.json(output);
-});
-
-app.get("/accounts/:accountId", async function (request, response) {
-  const output = await accountService.getAccount(request.params.accountId);
-  response.json(output);
-});
-
-app.listen(3000);
+const connection = new PgPromiseAdapter();
+const accountDAO = new AccountDAODatabase(connection);
+const signup = new Signup(accountDAO);
+const getAccount = new GetAccount(accountDAO);
+const httpServer = new ExpressAdapter();
+new MainController(httpServer, signup, getAccount);
+httpServer.listen(3000);

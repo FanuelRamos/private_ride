@@ -1,9 +1,9 @@
-import Ride from "./Ride";
+import Ride from "../../domain/Ride";
 
 export default interface RideDAO {
   save(ride: Ride): Promise<void>;
   update(ride: Ride): Promise<void>;
-  getRideById(rideId: string): Promise<Ride>;
+  getById(rideId: string): Promise<Ride>;
   getActiveRidesByPassangerId(passengerId: string): Promise<any>;
   getActiveRidesByDriverId(driverId: string): Promise<any>;
 }
