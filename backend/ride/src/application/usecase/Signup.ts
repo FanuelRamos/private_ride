@@ -20,7 +20,7 @@ export default class Signup {
 		const account = Account.create(input.name, input.email, input.cpf, input.isPassenger, input.isDriver, input.carPlate);
 		await this.accountDAO.save(account);
 		await this.mailerGateway.send(
-      account.email,
+      account.email.getValue(),
       "Verification",
       `Please verify your code at first login ${account.verificationCode}`
     );

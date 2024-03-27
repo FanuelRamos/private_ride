@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import Coord from "./Coord";
 
 export default class Ride {
   driverId?: string;
@@ -6,10 +7,8 @@ export default class Ride {
     readonly rideId: string,
     readonly passengerId: string,
     private status: string,
-    readonly fromLat: number,
-    readonly fromLong: number,
-    readonly toLat: number,
-    readonly toLong: number,
+    readonly from: Coord,
+    readonly to: Coord,
     readonly date: Date
   ) {}
 
@@ -17,11 +16,18 @@ export default class Ride {
     const rideId = crypto.randomUUID();
     const status = "requested";
     const date = new Date();
-    return new Ride(rideId, passengerId, status, fromLat, fromLong, toLat, toLong, date);
+    return new Ride(rideId, passengerId, status, new Coord(fromLat, fromLong), new Coord(toLat, toLong), date);
   }
 
   static restore(rideId: string, passengerId: string, driverId: string, status: string, fromLat: number, fromLong: number, toLat: number, toLong: number, date: Date) {
-    const ride =new Ride(rideId, passengerId, status, fromLat, fromLong, toLat, toLong, date);
+    const ride = new Ride(
+      rideId,
+      passengerId,
+      status,
+      new Coord(fromLat, fromLong),
+      new Coord(toLat, toLong),
+      date
+    );
     ride.driverId = driverId;
     return ride;
   }

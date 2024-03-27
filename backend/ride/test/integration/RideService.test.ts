@@ -27,7 +27,7 @@ beforeEach(function () {
   signup = new Signup(accountDAO);
   requestRide = new RequesetRide(rideDAO, accountDAO);
   acceptRide = new AcceptRide(rideDAO, accountDAO);
-  getRide = new GetRide(rideDAO);
+  getRide = new GetRide(rideDAO, accountDAO);
 })
 
 test("Deve solicitar e consutar uma corrida", async function () {
@@ -52,7 +52,7 @@ test("Deve solicitar e consutar uma corrida", async function () {
   };
   const outputRequestRide = await requestRide.execute(inputRequestRide);
   const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-  expect(outputGetRide.getStatus()).toBe("requested");
+  expect(outputGetRide.status).toBe("requested");
   expect(outputGetRide.passengerId).toBe(outputSignup.accountId);
   expect(outputGetRide.fromLat).toBe(inputRequestRide.from.lat);
   expect(outputGetRide.fromLong).toBe(inputRequestRide.from.long);
@@ -96,7 +96,7 @@ test("Deve solicitar e aceitar uma corrida", async function () {
   };
   await acceptRide.execute(inputAcceptRide);
   const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-  expect(outputGetRide.getStatus()).toBe("accepted");
+  expect(outputGetRide.status).toBe("accepted");
   expect(outputGetRide.driverId).toBe(outputSignupDriver.accountId);
 });
 
@@ -331,7 +331,7 @@ test("Deve solicitar, aceitar e iniciar uma corrida", async function () {
 	};
 	await startRide.execute(inputStartRide);
 	const outputGetRide = await getRide.execute(outputRequestRide.rideId);
-	expect(outputGetRide.getStatus()).toBe("in_progress");
+	expect(outputGetRide.status).toBe("in_progress");
 	expect(outputGetRide.driverId).toBe(outputSignupDriver.accountId);
 });
 
