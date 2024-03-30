@@ -1,11 +1,9 @@
-import pgp from "pg-promise";
-import RideDAO from "../../application/repository/RideDAO";
+import RideRepository from "../../application/repository/RideRepository";
 import Ride from "../../domain/Ride";
 import Connection from "../database/Connection";
 
-export default class RideDAODatabase implements RideDAO {
-
-  constructor (private readonly connection: Connection) {}
+export default class RideRepositoryDatabase implements RideRepository {
+  constructor(private readonly connection: Connection) {}
 
   async save(ride: Ride): Promise<void> {
     await this.connection.query(
@@ -24,8 +22,14 @@ export default class RideDAODatabase implements RideDAO {
   }
   async update(ride: Ride): Promise<void> {
     await this.connection.query(
-      "update ride set driver_id = $1, status = $2 where ride_id = $3",
-      [ride.driverId, ride.getStatus(), ride.rideId]
+      "update ride set driver_id = $1, status = $2, distance = $3, fare = $4 where ride_id = $5",
+      [
+        ride.driverId,
+        ride.getStatus(),
+        ride.getDistance(),
+        ride.getFare(),
+        ride.rideId,
+      ]
     );
   }
   async getById(rideId: string): Promise<Ride> {
@@ -33,7 +37,20 @@ export default class RideDAODatabase implements RideDAO {
       "select * from ride where ride_id = $1",
       [rideId]
     );
-    return Ride.restore(rideData.ride_id, rideData.passenger_id, rideData.driver_id, rideData.status, parseFloat(rideData.from_lat), parseFloat(rideData.from_long), parseFloat(rideData.to_lat), parseFloat(rideData.to_long), rideData.date);;
+    const ride = Ride.restore(
+      rideData.ride_id,
+      rideData.passenger_id,
+      rideData.driver_id,
+      rideData.status,
+      parseFloat(rideData.from_lat),
+      parseFloat(rideData.from_long),
+      parseFloat(rideData.to_lat),
+      parseFloat(rideData.to_long),
+      rideData.date,
+      parseFloat(rideData.distance),
+      parseFloat(rideData.fare)
+    );
+    return ride;
   }
 
   async getActiveRidesByPassangerId(passengerId: string): Promise<any> {

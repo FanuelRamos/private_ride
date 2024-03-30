@@ -1,13 +1,13 @@
-import RideDAO from "../repository/RideDAO";
+import RideRepository from "../repository/RideRepository";
 
 export default class StartRide {
 
-  constructor(private readonly rideDAO: RideDAO) {}
+  constructor(private readonly rideRepository: RideRepository) {}
 
   async execute (input: Input) {
-    const ride = await this.rideDAO.getById(input.rideId);
+    const ride = await this.rideRepository.getById(input.rideId);
     ride.start()
-    await this.rideDAO.update(ride);
+    await this.rideRepository.update(ride);
   }
 }
 

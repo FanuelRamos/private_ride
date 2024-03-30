@@ -1,6 +1,6 @@
-import AccountDAO from "../../src/application/repository/AccountDAO";
-import AccountDAODatabase from "../../src/infra/repository/AccountDAODatabase";
-import AccountDAOMemory from "../../src/infra/repository/AccountDAOMemory";
+import AccountRepository from "../../src/application/repository/AccountRepository";
+import AccountRepositoryDatabase from "../../src/infra/repository/AccountRepositoryDatabase";
+import AccountRepositoryMemory from "../../src/infra/repository/AccountDAOMemory";
 import Connection from "../../src/infra/database/Connection";
 import GetAccount from "../../src/application/usecase/GetAccount";
 import PgPromiseAdapter from "../../src/infra/database/PgPromiseAdapter";
@@ -8,15 +8,15 @@ import Signup from "../../src/application/usecase/Signup";
 
 
 let connection: Connection;
-let accountDAO: AccountDAO;
+let accountRepository: AccountRepository;
 let signup: Signup;
 let getAccount: GetAccount;
 
 beforeEach(function () {
 	connection = new PgPromiseAdapter();
-	accountDAO = new AccountDAODatabase(connection);
-	signup = new Signup(accountDAO);
-	getAccount = new GetAccount(accountDAO);
+	accountRepository = new AccountRepositoryDatabase(connection);
+	signup = new Signup(accountRepository);
+	getAccount = new GetAccount(accountRepository);
 });
 
 test("Deve criar um passageiro", async function () {
@@ -109,7 +109,7 @@ test("Não deve criar um motorista com place do carro inválida", async function
 });
 
 test("Deve criar um passageiro com fake", async function () {
-	const accountDAO = new AccountDAOMemory();
+	const accountRepository = new AccountRepositoryMemory();
 	const input: any = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
@@ -118,9 +118,9 @@ test("Deve criar um passageiro com fake", async function () {
 		isDriver: false,
 		carPlate: ""
 	}
-	const signup = new Signup(accountDAO);
+	const signup = new Signup(accountRepository);
 	const output = await signup.execute(input);
-	const getAccount = new GetAccount(accountDAO);
+	const getAccount = new GetAccount(accountRepository);
 	const account = await getAccount.execute(output.accountId);
 	expect(account?.accountId).toBeDefined();
 	expect(account?.name).toBe(input.name);

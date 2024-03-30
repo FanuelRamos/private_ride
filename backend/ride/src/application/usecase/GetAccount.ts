@@ -1,13 +1,13 @@
-import AccountDAO from "../repository/AccountDAO";
-import AccountDAODatabase from "../../infra/repository/AccountDAODatabase";
+import AccountRepository from "../repository/AccountRepository";
+import AccountRepositoryDatabase from "../../infra/repository/AccountRepositoryDatabase";
 
 export default class GetAccount {
   constructor(
-    private readonly accountDAO: AccountDAO
+    private readonly accountRepository: AccountRepository
   ) {}
 
   async execute(accountId: string): Promise<Output> {
-    const account = await this.accountDAO.getById(accountId);
+    const account = await this.accountRepository.getById(accountId);
     if (!account) throw new Error("Account not found");
     return {
       accountId: account.accountId,

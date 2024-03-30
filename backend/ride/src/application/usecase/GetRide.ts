@@ -1,17 +1,15 @@
-import RideDAO from "../repository/RideDAO";
-import RideDAODatabase from "../../infra/repository/RideDAODatabase";
-import AccountDAO from "../repository/AccountDAO";
+import RideRepository from "../repository/RideRepository";
+import AccountRepository from "../repository/AccountRepository";
 
 export default class GetRide {
-  
-  constructor (
-    private readonly rideDAO: RideDAO,
-    private readonly accountDAO: AccountDAO
+  constructor(
+    private readonly rideRepository: RideRepository,
+    private readonly accountRepository: AccountRepository
   ) {}
 
-  async execute (rideId: string): Promise<Output> {
-    const ride = await this.rideDAO.getById(rideId);
-    const account = await this.accountDAO.getById(ride.passengerId);
+  async execute(rideId: string): Promise<Output> {
+    const ride = await this.rideRepository.getById(rideId);
+    const account = await this.accountRepository.getById(ride.passengerId);
     if (!ride || !account) throw new Error();
     return {
       rideId: ride.rideId,
@@ -23,6 +21,8 @@ export default class GetRide {
       toLong: ride.to.getLong(),
       date: ride.date,
       status: ride.getStatus(),
+      distance: ride.getDistance(),
+      fare: ride.getFare(),
       passenger: {
         accountId: account.accountId,
         name: account.name.getValue(),
@@ -30,8 +30,8 @@ export default class GetRide {
         cpf: account.cpf.getValue(),
         carPlate: account.carPlate.getValue(),
         isPassenger: account.isPassenger,
-        isDriver: account.isDriver
-      }
+        isDriver: account.isDriver,
+      },
     };
   }
 }
@@ -46,6 +46,8 @@ type Output = {
   toLong: number,
   date: Date,
   status: string,
+  distance: number,
+  fare: number,
   passenger: {
     accountId: string,
     name: string,

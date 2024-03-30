@@ -1,12 +1,12 @@
 import AcceptRide from "../../src/application/usecase/AcceptRide";
-import AccountDAO from "../../src/application/repository/AccountDAO";
-import AccountDAODatabase from "../../src/infra/repository/AccountDAODatabase";
+import AccountRepository from "../../src/application/repository/AccountRepository";
+import AccountRepositoryDatabase from "../../src/infra/repository/AccountRepositoryDatabase";
 import Connection from "../../src/infra/database/Connection";
 import GetRide from "../../src/application/usecase/GetRide";
 import PgPromiseAdapter from "../../src/infra/database/PgPromiseAdapter";
 import RequesetRide from "../../src/application/usecase/RequestRide";
-import RideDAO from "../../src/application/repository/RideDAO";
-import RideDAODatabase from "../../src/infra/repository/RideDAODatabase";
+import RideRepository from "../../src/application/repository/RideRepository";
+import RideRepositoryDatabase from "../../src/infra/repository/RideRepositoryDatabase";
 import Signup from "../../src/application/usecase/Signup";
 import StartRide from "../../src/application/usecase/StartRide";
 
@@ -16,18 +16,18 @@ let acceptRide: AcceptRide;
 let getRide: GetRide;
 let startRide: StartRide;
 let connection: Connection;
-let rideDAO: RideDAO;
-let accountDAO: AccountDAO;
+let rideRepository: RideRepository;
+let accountRepository: AccountRepository;
 
 beforeEach(function () {
   connection = new PgPromiseAdapter();
-  rideDAO = new RideDAODatabase(connection);
-  startRide = new StartRide(rideDAO);
-  accountDAO = new AccountDAODatabase(connection);
-  signup = new Signup(accountDAO);
-  requestRide = new RequesetRide(rideDAO, accountDAO);
-  acceptRide = new AcceptRide(rideDAO, accountDAO);
-  getRide = new GetRide(rideDAO, accountDAO);
+  rideRepository = new RideRepositoryDatabase(connection);
+  startRide = new StartRide(rideRepository);
+  accountRepository = new AccountRepositoryDatabase(connection);
+  signup = new Signup(accountRepository);
+  requestRide = new RequesetRide(rideRepository, accountRepository);
+  acceptRide = new AcceptRide(rideRepository, accountRepository);
+  getRide = new GetRide(rideRepository, accountRepository);
 })
 
 test("Deve solicitar e consutar uma corrida", async function () {
@@ -223,7 +223,7 @@ test("Não deve aceitar uma corrida se o status da corrida for requested", async
   };
   await acceptRide.execute(inputAcceptRide);
   await expect(() => acceptRide.execute(inputAcceptRide)).rejects.toThrow(
-    new Error("The ride is not requested")
+    new Error("Invalid status")
   );
 });
 
