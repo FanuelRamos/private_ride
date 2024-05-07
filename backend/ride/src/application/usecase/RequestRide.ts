@@ -1,13 +1,16 @@
 import AccountRepository from "../repository/AccountRepository";
 import Ride from "../../domain/Ride";
 import RideRepository from "../repository/RideRepository";
+import RepositoryFactory from "../factory/RepositoryFactory";
 
 export default class RequesetRide {
-  
-  constructor (
-    private readonly rideRepository: RideRepository,
-    private readonly accountRepository: AccountRepository  
-  ) {}
+  rideRepository: RideRepository;
+  accountRepository: AccountRepository;
+
+  constructor (private readonly repositoryFactory: RepositoryFactory) {
+    this.rideRepository = repositoryFactory.createRideRepository();
+    this.accountRepository = repositoryFactory.createAccountRepository();
+  }
 
   async execute (input: Input) {
     const account = await this.accountRepository.getById(input.passengerId);

@@ -9,6 +9,8 @@ import RideRepository from "../../src/application/repository/RideRepository";
 import RideRepositoryDatabase from "../../src/infra/repository/RideRepositoryDatabase";
 import Signup from "../../src/application/usecase/Signup";
 import StartRide from "../../src/application/usecase/StartRide";
+import RepositoryFactory from "../../src/application/factory/RepositoryFactory";
+import RepositoryDatabaseFactory from "../../src/infra/factory/RepositoryDatabaseFactory";
 
 let signup: Signup;
 let requestRide: RequesetRide;
@@ -17,16 +19,18 @@ let getRide: GetRide;
 let startRide: StartRide;
 let connection: Connection;
 let rideRepository: RideRepository;
+let repositoryFactory: RepositoryFactory;
 let accountRepository: AccountRepository;
 
 beforeEach(function () {
   connection = new PgPromiseAdapter();
   rideRepository = new RideRepositoryDatabase(connection);
+  repositoryFactory = new RepositoryDatabaseFactory(connection);
   startRide = new StartRide(rideRepository);
   accountRepository = new AccountRepositoryDatabase(connection);
   signup = new Signup(accountRepository);
-  requestRide = new RequesetRide(rideRepository, accountRepository);
-  acceptRide = new AcceptRide(rideRepository, accountRepository);
+  requestRide = new RequesetRide(repositoryFactory);
+  acceptRide = new AcceptRide(repositoryFactory);
   getRide = new GetRide(rideRepository, accountRepository);
 })
 

@@ -13,6 +13,8 @@ import UpdatePosition from "../../src/application/usecase/UpdatePosition";
 import PositionRepository from "../../src/application/repository/PositionRepository";
 import PositionRepositoryDatabase from "../../src/infra/repository/PositionRepositoryDatabase";
 import FinishRide from "../../src/application/usecase/FinishRide";
+import RepositoryFactory from "../../src/application/factory/RepositoryFactory";
+import RepositoryDatabaseFactory from "../../src/infra/factory/RepositoryDatabaseFactory";
 
 let signup: Signup;
 let requestRide: RequesetRide;
@@ -23,18 +25,20 @@ let updatePosition: UpdatePosition;
 let finishRide: FinishRide;
 let connection: Connection;
 let rideRepository: RideRepository;
+let repositoryFactory: RepositoryFactory;
 let accountRepository: AccountRepository;
 let positionRepository: PositionRepository;
 
 beforeEach(function () {
   connection = new PgPromiseAdapter();
   rideRepository = new RideRepositoryDatabase(connection);
+  repositoryFactory = new RepositoryDatabaseFactory(connection);
   startRide = new StartRide(rideRepository);
   accountRepository = new AccountRepositoryDatabase(connection);
   positionRepository = new PositionRepositoryDatabase(connection);
   signup = new Signup(accountRepository);
-  requestRide = new RequesetRide(rideRepository, accountRepository);
-  acceptRide = new AcceptRide(rideRepository, accountRepository);
+  requestRide = new RequesetRide(repositoryFactory);
+  acceptRide = new AcceptRide(repositoryFactory);
   updatePosition = new UpdatePosition(rideRepository, positionRepository);
   finishRide = new FinishRide(rideRepository, positionRepository);
   getRide = new GetRide(rideRepository, accountRepository);

@@ -1,11 +1,15 @@
+import RepositoryFactory from "../factory/RepositoryFactory";
 import AccountRepository from "../repository/AccountRepository";
 import RideRepository from "../repository/RideRepository";
 
 export default class AcceptRide {
-  constructor(
-    private readonly rideRepository: RideRepository,
-    private readonly accountRepository: AccountRepository
-  ) {}
+  rideRepository: RideRepository;
+  accountRepository: AccountRepository;
+
+  constructor(private readonly repositoryFactory: RepositoryFactory) {
+    this.rideRepository = repositoryFactory.createRideRepository();
+    this.accountRepository = repositoryFactory.createAccountRepository();
+  }
 
   async execute(input: Input) {
     const account = await this.accountRepository.getById(input.driverId);

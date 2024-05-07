@@ -9,9 +9,9 @@ test("Deve criar uma conta de passageiro", async function () {
 		isDriver: false,
 		carPlate: ""
 	};
-  const responseSignup = await axios.post("http://localhost:3000/signup", inputSignup);
+  const responseSignup = await axios.post("http://localhost:3300/signup", inputSignup);
   const outputSignup = responseSignup.data;
-  const responseGetAccount = await axios.get(`http://localhost:3000/accounts/${outputSignup.accountId}`);
+  const responseGetAccount = await axios.get(`http://localhost:3300/accounts/${outputSignup.accountId}`);
   const outputGetAccount = responseGetAccount.data;
   expect(outputGetAccount.accountId).toBeDefined();
 	expect(outputGetAccount.name).toBe(inputSignup.name);

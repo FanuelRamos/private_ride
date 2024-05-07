@@ -9,8 +9,8 @@ export default class PgPromiseAdapter implements Connection {
     this.connection = pgp()("postgres://postgres:@localhost:5432/cccat13");
   }
 
-  query(statement: string, data: any): Promise<any> {
-    return this.connection.query(statement, data);
+  async query(statement: string, data: any): Promise<any> {
+    return await this.connection.query(statement, data);
   }
 
   async close(): Promise<void> {
